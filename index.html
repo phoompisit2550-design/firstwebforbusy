@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotdog Express - ฮอทดอกอร่อยระดับตำนาน</title>
+    <!-- Google Fonts & FontAwesome for icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        /* Header & Navbar */
+        header {
+            background-color: #ff4757;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .cart-btn {
+            background: white;
+            color: #ff4757;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: 0.2s;
+        }
+
+        .cart-btn:hover {
+            background: #f1f2f6;
+        }
+
+        .cart-badge {
+            background: #ff4757;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 50%;
+            font-size: 12px;
+        }
+
+        /* Hero Banner */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('https://images.unsplash.com/photo-1619740455993-9e3106cadc56?auto=format&fit=crop&w=1200&q=80') center/cover;
+            color: white;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+
+        .hero p {
+            font-size: 18px;
+            font-weight: 300;
+        }
+
+        /* Main Container */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 900px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Product Section */
+        .section-title {
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-left: 5px solid #ff4757;
+            padding-left: 10px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 20px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+
+        .product-img {
+            width: 100%;
+            height: 160px;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        .product-name {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .product-desc {
+            font-size: 13px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+
+        .product-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff4757;
+        }
+
+        .btn-add {
+            background-color: #ff4757;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #ff6b81;
+        }
+
+        /* Cart Sidebar */
+        .cart-container {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            height: fit-content;
+            position: sticky;
+            top: 90px;
+        }
+
+        .cart-items-list {
+            max-height: 300px;
+            overflow-y: auto;
+            margin-bottom: 15px;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #f1f2f6;
+            font-size: 14px;
+        }
+
+        .cart-item-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .cart-item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            background: #eee;
+            border: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .qty-btn:hover {
+            background: #ddd;
+        }
+
+        .cart-summary {
+            border-top: 2px solid #f1f2f6;
+            padding-top: 15px;
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 15px;
+        }
+
+        .summary-row.total {
+            font-weight: 700;
+            font-size: 18px;
+            color: #ff4757;
+        }
+
+        .btn-checkout {
+            width: 100%;
+            background-color: #2ed573;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: 0.2s;
+        }
+
+        .btn-checkout:hover {
+            background-color: #26af5f;
+        }
+
+        .empty-cart {
+            text-align: center;
+            color: #999;
+            padding: 20px 0;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header>
+        <div class="logo">
+            <i class="fa-solid fa-hotdog"></i> Hotdog Express
+        </div>
+        <button class="cart-btn" onclick="toggleCart()">
+            <i class="fa-solid fa-cart-shopping"></i> ตะกร้าสินค้า 
+            <span class="cart-badge" id="cart-count">0</span>
+        </button>
+    </header>
+
+    <!-- Hero Section -->
+    <div class="hero">
+        <h1>ฮอทดอกร้อนๆ ชีสเยิ้มๆ ส่งตรงถึงหน้าบ้านคุณ</h1>
+        <p>คัดสรรวัตถุดิบพรีเมียม ไส้กรอกหนังกรอบ ขนมปังนุ่มละมุนลิ้น</p>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        
+        <!-- เมนูสินค้า -->
+        <div>
+            <h2 class="section-title">เมนูฮอทดอกแนะนำ</h2>
+            <div class="product-grid" id="product-grid">
+                <!-- ข้อมูลสินค้าจะถูกโหลดผ่าน JavaScript -->
+            </div>
+        </div>
+
+        <!-- ตะกร้าสินค้า -->
+        <div class="cart-container">
+            <h2 class="section-title" style="font-size: 20px; margin-bottom: 15px;">ตะกร้าของคุณ</h2>
+            
+            <div class="cart-items-list" id="cart-items">
+                <div class="empty-cart">ยังไม่มีสินค้าในตะกร้า</div>
+            </div>
+
+            <div class="cart-summary" id="cart-summary" style="display: none;">
+                <div class="summary-row">
+                    <span>ราคารวมสินค้า</span>
+                    <span id="subtotal">0 ฿</span>
+                </div>
+                <div class="summary-row">
+                    <span>ค่าจัดส่ง</span>
+                    <span>30 ฿</span>
+                </div>
+                <div class="summary-row total">
+                    <span>ยอดสุทธิ</span>
+                    <span id="grand-total">0 ฿</span>
+                </div>
+                <button class="btn-checkout" onclick="checkout()">สั่งซื้อสินค้า</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JavaScript ระบบร้านค้า -->
+    <script>
+        // รายการสินค้าจำลอง (Hotdog Menu)
+        const products = [
+            { id: 1, name: 'Classic Hotdog', price: 69, desc: 'ฮอทดอกดั้งเดิม ไส้กรอกหมูรมควัน ราดซอสมะเขือเทศและมัสตาร์ด', img: 'https://www.seriouseats.com/thmb/48kIHfT9U24qGn-4zu0jMwxOt6g=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/SEA-best-grilled-hot-dogs-recipe-hero-02-9d245c0d43874a3da13a7228682b0dce.jpg' },
+            { id: 2, name: 'Cheese Lava Hotdog', price: 89, desc: 'ชีสเน้นๆ เยิ้มทะลัก โปะหน้าด้วยมอซซาเรลล่าชีสเผาไฟ', img: 'https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/21861ad1f03b6136a02bf810234cd666/Derivates/d257bb4fe192628f00a98b1f08a7976fbf7f21d4.jpg' },
+            { id: 3, name: 'Bacon Bomb Hotdog', price: 99, desc: 'พันเบคอนกรุบกรอบรอบไส้กรอกยักษ์ ราดชีสดิปสูตรพิเศษ', img: 'https://assets.tmecosys.com/image/upload/t_web_rdp_recipe_584x480/img/recipe/ras/Assets/21861ad1f03b6136a02bf810234cd666/Derivates/d257bb4fe192628f00a98b1f08a7976fbf7f21d4.jpg' },
+            { id: 4, name: 'Spicy Chili Dog', price: 79, desc: 'เอาใจสายแซ่บด้วยซอสชิลีมีทสับเผ็ดร้อนและพริกคาลาเปญโญ่', img: 'https://www.foodandwine.com/thmb/dpB8_ucd52WrBfD8m9LSAi5vGX0=/750x0/filters:no_upscale():max_bytes(150000):strip_icc():format(webp)/hot-dog-melts-FT-RECIPE0525-469242c72f084f7584eae18b46d3a8ba.jpg' }
+        ];
+
+        let cart = [];
+
+        // แสดงรายการสินค้าลงในหน้าจอ
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            grid.innerHTML = products.map(product => `
+                <div class="product-card">
+                    <img src="${product.img}" alt="${product.name}" class="product-img">
+                    <div class="product-info">
+                        <div>
+                            <div class="product-name">${product.name}</div>
+                            <div class="product-desc">${product.desc}</div>
+                        </div>
+                        <div class="product-footer">
+                            <span class="product-price">${product.price} ฿</span>
+                            <button class="btn-add" onclick="addToCart(${product.id})">เพิ่ม</button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // เพิ่มสินค้าลงตะกร้า
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            const cartItem = cart.find(item => item.id === productId);
+
+            if (cartItem) {
+                cartItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+            updateCartUI();
+        }
+
+        // เปลี่ยนแปลงจำนวนสินค้าในตะกร้า (+ / -)
+        function changeQty(productId, delta) {
+            const cartItem = cart.find(item => item.id === productId);
+            if (cartItem) {
+                cartItem.qty += delta;
+                if (cartItem.qty <= 0) {
+                    cart = cart.filter(item => item.id !== productId);
+                }
+            }
+            updateCartUI();
+        }
+
+        // อัปเดตหน้าตาตะกร้าสินค้า
+        function updateCartUI() {
+            const cartItemsContainer = document.getElementById('cart-items');
+            const cartSummary = document.getElementById('cart-summary');
+            const cartCount = document.getElementById('cart-count');
+            
+            // คำนวณจำนวนชิ้นรวม
+            const totalCount = cart.reduce((sum, item) => sum + item.qty, 0);
+            cartCount.textContent = totalCount;
+
+            if (cart.length === 0) {
+                cartItemsContainer.innerHTML = '<div class="empty-cart">ยังไม่มีสินค้าในตะกร้า</div>';
+                cartSummary.style.display = 'none';
+                return;
+            }
+
+            cartSummary.style.display = 'block';
+
+            // วนลูปแสดงรายการในตะกร้า
+            cartItemsContainer.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div class="cart-item-details">
+                        <strong>${item.name}</strong>
+                        <span style="color:#666; font-size:12px;">${item.price} ฿ x ${item.qty}</span>
+                    </div>
+                    <div class="cart-item-controls">
+                        <button class="qty-btn" onclick="changeQty(${item.id}, -1)">-</button>
+                        <span>${item.qty}</span>
+                        <button class="qty-btn" onclick="changeQty(${item.id}, 1)">+</button>
+                    </div>
+                </div>
+            `).join('');
+
+            // คำนวณราคารวม
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
+            const shipping = 30;
+            const grandTotal = subtotal + shipping;
+
+            document.getElementById('subtotal').textContent = subtotal + ' ฿';
+            document.getElementById('grand-total').textContent = grandTotal + ' ฿';
+        }
+
+        // ปุ่มสั่งซื้อ
+        function checkout() {
+            if (cart.length === 0) return;
+            alert('🎉 สั่งซื้อสำเร็จ! ขอบคุณที่อุดหนุน Hotdog Express ครับ');
+            cart = [];
+            updateCartUI();
+        }
+
+        // โหลดข้อมูลสินค้าตอนเปิดเว็บ
+        renderProducts();
+    </script>
+
+</body>
+</html>
+<script>
+    const products = [
+        {
+            id: 1,
+            name: 'Classic Hotdog',
+            price: 69,
+            desc: 'ฮอทดอกดั้งเดิม ไส้กรอกหมูรมควัน ราดซอสมะเขือเทศและมัสตาร์ด',
+            img: 'https://images.unsplash.com/photo-1612392062631-94dd858cba88?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+            id: 2,
+            name: 'Cheese Lava Hotdog',
+            price: 89,
+            desc: 'ชีสเน้นๆ เยิ้มทะลัก โปะหน้าด้วยมอซซาเรลล่าชีสเผาไฟ',
+            img: 'https://images.unsplash.com/photo-1612392062631-94dd858cba88?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+            id: 3,
+            name: 'Bacon Bomb Hotdog',
+            price: 99,
+            desc: 'พันเบคอนกรุบกรอบรอบไส้กรอกยักษ์ ราดชีสดิปสูตรพิเศษ',
+            img: 'https://images.unsplash.com/photo-1612392062631-94dd858cba88?auto=format&fit=crop&w=400&q=80'
+        },
+        {
+            id: 4,
+            name: 'Spicy Chili Dog',
+            price: 79,
+            desc: 'เอาใจสายแซ่บด้วยซอสชิลีมีทสับเผ็ดร้อนและพริกคาลาเปญโญ่',
+            img: 'https://images.unsplash.com/photo-1612392062631-94dd858cba88?auto=format&fit=crop&w=400&q=80'
+        }
+    ];
+</script>
